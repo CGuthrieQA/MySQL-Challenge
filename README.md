@@ -496,3 +496,85 @@ SELECT COUNT(IndepYear)
 FROM country
 WHERE IndepYear IS NOT NULL;
 ```
+
+## Movielens Challenge SQL
+
+### 1)
+
+List the titles and release dates of movies released between 1983-1993 in reverse chronological order.
+
+```SQL
+SELECT title, release_date
+FROM movies
+WHERE release_date BETWEEN '1983-01-01' AND '1993-01-01'
+ORDER BY release_date DESC;
+```
+
+
+### 2)
+
+Without using ```LIMIT```, list the titles of the movies with the lowest average rating.
+
+```SQL
+SELECT movies.title, AVG(ratings.rating)
+FROM ratings
+JOIN movies ON ratings.movie_id=movies.id
+WHERE ratings.rating = (
+	SELECT rating
+	FROM ratings
+	ORDER BY rating ASC
+	LIMIT 1
+)
+GROUP BY ratings.movie_id;
+```
+
+
+### 3)
+
+List the unique records for Sci-Fi movies where male 24-year-old students have given 5-star ratings.
+
+```SQL
+SELECT movies.id, title
+FROM movies
+JOIN genres_movies ON genres_movies.movie_id=movies.id
+JOIN genres ON genres.id=genres_movies.genre_id
+JOIN ratings ON ratings.movie_id=movies.id
+JOIN users ON users.id=ratings.user_id
+JOIN occupations ON occupations.id=users.occupation_id
+WHERE genres.name='Sci-Fi'
+AND users.age='24'
+AND users.gender='m'
+AND ratings.rating='5'
+AND occupations.name='Student';
+```
+
+
+### 4)
+
+List the unique titles of each of the movies released on the most popular release day.
+
+```SQL
+SELECT title
+FROM movies
+WHERE release_date=(
+	SELECT release_date
+	FROM movies
+	GROUP BY release_date
+	ORDER BY COUNT(id) DESC
+	LIMIT 1
+);
+```
+
+
+### 5)
+
+Find the total number of movies in each genre; list the results in ascending numeric order.
+
+```SQL
+SELECT COUNT(movies.id), genres.name
+FROM genres
+JOIN genres_movies ON genres.id=genres_movies.genre_id
+JOIN movies ON genres_movies.movie_id=movies.id
+GROUP BY genres_movies.genre_id
+ORDER BY COUNT(movies.id) DESC;
+```
