@@ -89,7 +89,10 @@ Find the movies with the longest runtime, without using ```LIMIT```.
 ```SQL
 SELECT title, length
 FROM film
-ORDER BY length DESC;
+WHERE length= (
+	SELECT max(length)
+	FROM film
+);
 ```
 
 ### 10)
@@ -561,7 +564,6 @@ WHERE release_date=(
 	FROM movies
 	GROUP BY release_date
 	ORDER BY COUNT(id) DESC
-	LIMIT 1
 );
 ```
 
