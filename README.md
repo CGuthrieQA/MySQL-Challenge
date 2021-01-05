@@ -523,10 +523,8 @@ SELECT movies.title, AVG(ratings.rating)
 FROM ratings
 JOIN movies ON ratings.movie_id=movies.id
 WHERE ratings.rating = (
-	SELECT rating
+	SELECT MIN(rating)
 	FROM ratings
-	ORDER BY rating ASC
-	LIMIT 1
 )
 GROUP BY ratings.movie_id;
 ```
@@ -564,6 +562,7 @@ WHERE release_date=(
 	FROM movies
 	GROUP BY release_date
 	ORDER BY COUNT(id) DESC
+	LIMIT 1
 );
 ```
 
